@@ -2,6 +2,10 @@
 /backend/.idea
 /backend/dist
 /.idea
+/frontend/node_modules
+/frontend/.idea
+
 .DS_store
 
 /backend/package-lock.json
+/frontend/package-lock.json

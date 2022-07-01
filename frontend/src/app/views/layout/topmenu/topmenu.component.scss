@@ -1,0 +1,24 @@
+.navbar {
+  background-color: transparent;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16);
+}
+
+.navbar-brand {
+  padding-left: 15px;
+  color: #e8bd57;
+}
+.navbar-brand:hover {
+  color: #f1d084;
+}
+
+.navbar-nav .active>.nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show>.nav-link {
+  color: #252524;
+}
+
+.navbar-nav .nav-link {
+  color: #252524;
+}
+
+.navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+  color: #3f3f3e;
+}
