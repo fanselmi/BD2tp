@@ -3,3 +3,5 @@
 /dist
 
 .DS_store
+
+package-lock.json

@@ -1,14 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Url } from "./urls.model";
 import putUrl from "../db/urls/putUrl";
 import getUrls from "../db/urls/getUrls";
 import getUrlById from "../db/urls/getUrlById";
+import deleteUrl from "../db/urls/deleteUrl";
 
 @Injectable()
 export class UrlsService {
-  insertUrl(original: string, user_id: number, id?: string, exp_date?: string) {
+  async insertUrl(original: string, user_id: number, id?: string, exp_date?: string) {
+    let count: number;
     if (id === undefined) {
-      id = require("randomstring").generate(5);
+      do {
+        id = require("randomstring").generate(5);
+        count = await this.getUrlById(id).then((data) => { return data.Count});
+      } while(count !== 0);
+    } else {
+      count = await this.getUrlById(id).then((data) => { return data.Count});
+      if (count !== 0) throw new BadRequestException();
     }
     if (exp_date === undefined) {
       const today = new Date();
@@ -32,5 +40,9 @@ export class UrlsService {
 
   getUrlById(id: string) {
     return getUrlById(id);
+  }
+
+  deleteUrl(id: string) {
+    return deleteUrl(1, id); //TODO sacar el hardcodeado
   }
 }
