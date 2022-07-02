@@ -10,7 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
-import { UrlsComponent } from './views/pages/urls/urls.component';
+import {UrlsModule} from "./views/pages/urls/urls.module";
+import { HttpClientModule } from '@angular/common/http';
+import {NgxLoadingButtonsModule} from "ngx-loading-buttons";
 
 @NgModule({
   declarations: [
@@ -18,15 +20,19 @@ import { UrlsComponent } from './views/pages/urls/urls.component';
     TopmenuComponent,
     LoginComponent,
     RegisterComponent,
-    UrlsComponent
+
   ],
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-      MatInputModule
+      UrlsModule,
+      BrowserModule,
+      AppRoutingModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      ReactiveFormsModule,
+      MatInputModule,
+      MatFormFieldModule,
+      HttpClientModule,
+      NgxLoadingButtonsModule
 
     ],
   providers: [],

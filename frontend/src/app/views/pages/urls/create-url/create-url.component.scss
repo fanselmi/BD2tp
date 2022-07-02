@@ -1,0 +1,31 @@
+.container {
+  width: 85%;
+}
+.card {
+  border-radius:  0.75em;
+  .long {
+    width: 87%;
+    margin-right: 0.5em;
+  }
+  form {
+    button {
+      width: 12%;
+      align-self: center;
+      background-color: #e8bd57;
+      color: white;
+    }
+    button:disabled {
+      background-color: #7a7979;
+      color: white;
+    }
+  }
+  .urlResult {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    a {
+      align-self: center;
+    }
+  }
+
+}

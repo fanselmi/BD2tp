@@ -29,10 +29,10 @@ export class UrlsController {
   }
 
   @Post()
-  insertUrl(@Body('original') original: string, @Body('user_id') user_id: number, @Body('id') id?: string, @Body('exp_date') exp_date?: string) {
+  async insertUrl(@Body('original') original: string, @Body('user_id') user_id: number, @Body('id') id?: string, @Body('exp_date') exp_date?: string) {
     try {
       return {
-        id: this.urlsService.insertUrl(original, user_id, id, exp_date),
+        id: await this.urlsService.insertUrl(original, user_id, id, exp_date),
       };
     } catch (e) {
       if (e instanceof BadRequestException) throw new BadRequestException();
