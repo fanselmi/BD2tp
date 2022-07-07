@@ -13,26 +13,33 @@ import { RegisterComponent } from './views/pages/register/register.component';
 import {UrlsModule} from "./views/pages/urls/urls.module";
 import { HttpClientModule } from '@angular/common/http';
 import {NgxLoadingButtonsModule} from "ngx-loading-buttons";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+
 
 @NgModule({
   declarations: [
     AppComponent,
     TopmenuComponent,
-    LoginComponent,
     RegisterComponent,
+    LoginComponent
 
   ],
     imports: [
-      UrlsModule,
-      BrowserModule,
-      AppRoutingModule,
-      BrowserAnimationsModule,
-      FormsModule,
-      ReactiveFormsModule,
-      MatInputModule,
-      MatFormFieldModule,
-      HttpClientModule,
-      NgxLoadingButtonsModule
+        UrlsModule,
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        HttpClientModule,
+        NgxLoadingButtonsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
 
     ],
   providers: [],

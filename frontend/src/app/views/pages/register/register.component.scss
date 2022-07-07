@@ -1,0 +1,43 @@
+.container {
+  padding-top: 2em;
+  width: 70%;
+  .card {
+    border-radius:  0.75em;
+    .card-title {
+      justify-content: center;
+      display: flex;
+      padding-top: 0.75em;
+      font-family: "Roboto", Helvetica, sans-serif;
+      font-size: 28px;
+      letter-spacing: 4.2px;
+      word-spacing: 2.4px;
+      color: #000000;
+      font-weight: 400;
+      text-decoration: none;
+      font-style: normal;
+      text-transform: none;
+    }
+    .card-body {
+      form {
+        display: flex;
+        flex-direction: column;
+        .mat-form-field {
+          padding: 0 0.5em;
+        }
+        button {
+          width: 40%;
+          height: 40px;
+          align-self: center;
+          background-color: #e8bd57;
+          color: white;
+        }
+        .mat-button-disabled {
+          background-color: #7a7979;
+          color: white;
+          opacity: 40%;
+        }
+
+      }
+    }
+  }
+}

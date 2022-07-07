@@ -14,9 +14,10 @@
       background-color: #e8bd57;
       color: white;
     }
-    button:disabled {
+    .mat-button-disabled {
       background-color: #7a7979;
       color: white;
+      opacity: 40%;
     }
   }
   .urlResult {

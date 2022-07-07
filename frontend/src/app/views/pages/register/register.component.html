@@ -1,1 +1,28 @@
-<p>register works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-title">Create an account</div>
+    <div class="card-body">
+      <form novalidate [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field hideRequiredMarker appearance="outline">
+          <mat-label>Email</mat-label>
+          <input type="email" formControlName="email" matInput placeholder="Insert your email" />
+          <mat-error *ngIf="this.registerForm.controls['email'].hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="this.registerForm.controls['email'].hasError('email')">
+            Wrong format for email: john@example.com
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field  hideRequiredMarker appearance="outline">
+          <mat-label>Password</mat-label>
+          <input type="password" formControlName="password" matInput placeholder="Insert your password" />
+          <mat-error *ngIf="this.registerForm.controls['password'].hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+        <p>Already have an account? <a routerLink="/login">Login</a></p>
+        <button type="submit" [disabled]="!this.registerForm.valid" mat-raised-button [mtBasicSpinner]="this.loading" [hideText]="true">Register</button>
+      </form>
+    </div>
+  </div>
+</div>
