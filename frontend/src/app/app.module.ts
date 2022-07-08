@@ -15,6 +15,11 @@ import { HttpClientModule } from '@angular/common/http';
 import {NgxLoadingButtonsModule} from "ngx-loading-buttons";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatNativeDateModule} from "@angular/material/core";
+import { RedirectComponent } from './views/pages/redirect/redirect.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { Error404Component } from './views/pages/error404/error404.component';
 
 
 @NgModule({
@@ -22,26 +27,31 @@ import {MatIconModule} from "@angular/material/icon";
     AppComponent,
     TopmenuComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    RedirectComponent,
+    Error404Component
 
   ],
-    imports: [
-        UrlsModule,
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatFormFieldModule,
-        HttpClientModule,
-        NgxLoadingButtonsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatIconModule,
+  imports: [
+    UrlsModule,
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    HttpClientModule,
+    NgxLoadingButtonsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule
 
-    ],
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

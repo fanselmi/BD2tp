@@ -4,6 +4,7 @@ import {UrlsService} from "../../../../services/urls.service";
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatTooltip} from "@angular/material/tooltip";
 import {finalize} from "rxjs";
+import {UrlModel} from "../../../../models/url.model";
 
 @Component({
   selector: 'app-create-url',
@@ -16,15 +17,22 @@ export class CreateUrlComponent implements OnInit {
   public generatedUrl: string = '';
   public  pageUrl: string = "http://localhost:4200/";
   public loading: boolean = false;
+  public customizing: boolean = false;
+  public minDate!: Date;
+  public maxDate!: Date;
 
   @ViewChild('tooltip')  tooltip!: MatTooltip;
 
   constructor(private urlService: UrlsService,
-              private clipboard: Clipboard) { }
+              private clipboard: Clipboard) {
+    const currentYear = new Date().getFullYear();
+    this.minDate = new Date();
+    this.maxDate = new Date(currentYear + 3, 11, 31);
+  }
 
   ngOnInit(): void {
     this.urlForm = new FormGroup({
-      longUrl: new FormControl('', [Validators.required])
+      longUrl: new FormControl('', [Validators.required, Validators.maxLength(150)])
     })
 
   }
@@ -34,8 +42,16 @@ export class CreateUrlComponent implements OnInit {
       return;
     }
     let url =this.urlForm.controls['longUrl'].value;
+    let data: UrlModel = new UrlModel(url, 1);
+    if(this.customizing){
+      let exp_date = this.urlForm.controls['expirationDate'].value;
+      let id = this.urlForm.controls['text'].value;
+      if(exp_date != '') data.exp_date = exp_date;
+      if(id != '') data.id = id;
+    }
+
     this.loading = true;
-    this.urlService.createUrl(url)
+    this.urlService.createUrl(data)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -50,9 +66,24 @@ export class CreateUrlComponent implements OnInit {
 
 
   }
+
   public copyUrl(): void {
     this.clipboard.copy(this.pageUrl + this.generatedUrl);
     this.tooltip.show();
+    this.urlService.getOriginalUrl(this.generatedUrl).subscribe({
+      next: data => {
+        console.log(data);
+       // console.log(data.Items[0]);
+      }, error: err => {
+        console.log(err);
+      }
+    })
+  }
+
+  public customizeForm(): void {
+    this.urlForm.addControl('text', new FormControl('', [Validators.maxLength(5), Validators.minLength(5)]) )
+    this.urlForm.addControl('expirationDate', new FormControl('') )
+    this.customizing = true;
   }
 
 }

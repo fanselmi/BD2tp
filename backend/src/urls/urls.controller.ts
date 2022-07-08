@@ -25,7 +25,9 @@ export class UrlsController {
   @Get(':id')
   @UseInterceptors(NotFoundInterceptor)
   geUrlById(@Param('id') id: string) {
-    return this.urlsService.getUrlById(id);
+    return this.urlsService.getUrlById(id).then(res => {
+      return res.Items[0]
+    });
   }
 
   @Post()

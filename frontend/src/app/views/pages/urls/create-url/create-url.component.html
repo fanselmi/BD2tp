@@ -1,16 +1,38 @@
 <div class="container">
   <div class="card">
     <div class="card-body" >
-      <form style="display: flex;" novalidate [formGroup]="this.urlForm" (ngSubmit)="onSubmit()">
-        <mat-form-field class="long" hideRequiredMarker>
-          <mat-label>Url</mat-label>
-          <input formControlName="longUrl" matInput placeholder="Insert your url" />
-          <mat-error *ngIf="this.urlForm.controls['longUrl'].hasError('required')">
-            Must insert an url to shorten it
-          </mat-error>
-        </mat-form-field>
-       <button type="submit" [disabled]="!this.urlForm.valid"   mat-raised-button [mtBasicSpinner]="this.loading" [hideText]="true">Submit</button>
+      <form  novalidate [formGroup]="this.urlForm" (ngSubmit)="onSubmit()">
+        <div class="main-form">
+          <mat-form-field class="long" hideRequiredMarker>
+            <mat-label>Url</mat-label>
+            <input formControlName="longUrl" matInput placeholder="Insert your url" />
+            <mat-error *ngIf="this.urlForm.controls['longUrl'].hasError('required')">
+              Must insert an url to shorten it
+            </mat-error>
+          </mat-form-field>
+          <button type="submit" [disabled]="!this.urlForm.valid"   mat-raised-button [mtBasicSpinner]="this.loading" [hideText]="true">Submit</button>
+        </div>
+        <div *ngIf="customizing" class="secondary-form">
+          <mat-form-field hideRequiredMarker>
+            <mat-label>Custom text</mat-label>
+            <input formControlName="text" matInput placeholder="Insert your custom text" />
+            <mat-error *ngIf="this.urlForm.controls['text'].hasError('maxLength') || this.urlForm.controls['text'].hasError('minLength')">
+              Must be exactly 5 characters
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field  hideRequiredMarker>
+            <mat-label>Expiration Date</mat-label>
+            <input  [min]="minDate" [max]="maxDate" formControlName="expirationDate" matInput placeholder="Insert your expiration date" [matDatepicker]="picker">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
       </form>
+      <button (click)="customizeForm()" mat-raised-button class="edit-button">
+        <mat-icon>settings</mat-icon>
+        Customize
+      </button>
       <div *ngIf="generatedUrl.length > 0" class="urlResult">
         <a [href]="this.pageUrl + this.generatedUrl">{{this.pageUrl}}{{this.generatedUrl}}</a>
         <button mat-icon-button (click)="copyUrl()"

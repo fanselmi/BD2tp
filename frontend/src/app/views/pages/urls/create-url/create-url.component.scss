@@ -8,16 +8,36 @@
     margin-right: 0.5em;
   }
   form {
-    button {
-      width: 12%;
-      align-self: center;
-      background-color: #e8bd57;
-      color: white;
+    display: flex;
+    flex-direction: column;
+    .main-form {
+      display: flex;
+      button {
+        width: 12%;
+        align-self: center;
+        background-color: #e8bd57;
+        color: white;
+      }
+      .mat-button-disabled {
+        background-color: #7a7979;
+        color: white;
+        opacity: 40%;
+      }
     }
-    .mat-button-disabled {
-      background-color: #7a7979;
-      color: white;
-      opacity: 40%;
+    .secondary-form {
+      display: flex;
+      justify-content: space-between;
+      .mat-form-field {
+        width: 49%;
+      }
+    }
+
+
+  }
+  .edit-button{
+    display:flex;
+    .mat-icon {
+      margin-right: 0.2em;
     }
   }
   .urlResult {

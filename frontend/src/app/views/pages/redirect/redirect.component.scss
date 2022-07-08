@@ -1,0 +1,11 @@
+.loading {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  .spinner-border {
+    width: 5rem;
+    height: 5rem;
+    color: #e8bd57!important;
+  }
+}

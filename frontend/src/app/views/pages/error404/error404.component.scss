@@ -1,0 +1,24 @@
+div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+
+  font-family: "Roboto", Helvetica, sans-serif;
+  color: #ffffff;
+  font-weight: 400;
+  text-decoration: none;
+  font-style: normal;
+  text-transform: none;
+  h1 {
+    font-size: 35px;
+    letter-spacing: 4.2px;
+    word-spacing: 2.4px;
+  }
+  h3 {
+    font-size: 23px;
+
+  }
+
+}

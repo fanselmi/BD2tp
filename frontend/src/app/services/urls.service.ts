@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
+import {UrlModel} from "../models/url.model";
 
 
 @Injectable({
@@ -13,12 +14,12 @@ export class UrlsService {
 
   constructor(private http: HttpClient) { }
 
-  public createUrl(longUrl: string): Observable<any>{
-    let body = "{" +
-      "\"original\" : \"" + longUrl + "\"," +
-      "\"user_id\": 1" +
-      "}";
+  public createUrl(data: UrlModel): Observable<any>{
     let h= new HttpHeaders({ 'Content-Type': 'application/json' })
-    return this.http.post(this.baseUrl, body, {headers: h});
+    return this.http.post(this.baseUrl, data, {headers: h});
+  }
+
+  public getOriginalUrl(id: string): Observable<UrlModel>{
+    return this.http.get<UrlModel>(this.baseUrl + '/' + id);
   }
 }
