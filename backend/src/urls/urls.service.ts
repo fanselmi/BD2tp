@@ -1,48 +1,64 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Url } from "./urls.model";
-import putUrl from "../db/urls/putUrl";
-import getUrls from "../db/urls/getUrls";
-import getUrlById from "../db/urls/getUrlById";
-import deleteUrl from "../db/urls/deleteUrl";
+import { UrlsDatabase } from "./urls.database";
+
+const ID_LENGTH: number = 5;
 
 @Injectable()
 export class UrlsService {
-  async insertUrl(original: string, user_id: number, id?: string, exp_date?: string) {
-    let count: number;
+  constructor(
+    private readonly database: UrlsDatabase
+  ) {}
+
+  async insertUrl(original: string, user_id: string, id?: string, exp_date?: string, clicks?: number) {
+    let data;
     if (id === undefined) {
       do {
-        id = require("randomstring").generate(5);
-        count = await this.getUrlById(id).then((data) => { return data.Count});
-      } while(count !== 0);
+        id = require("randomstring").generate(ID_LENGTH);
+        data = await this.database.getUrlById(id);
+      } while(data.Count !== 0);
     } else {
-      count = await this.getUrlById(id).then((data) => { return data.Count});
-      if (count !== 0) throw new BadRequestException();
+      data = await this.database.getUrlById(id);
+      if (data.Count !== 0) throw new BadRequestException();
     }
     if (exp_date === undefined) {
       const today = new Date();
       today.setMonth(today.getMonth() + 1);
       exp_date = today.toDateString();
     }
-    const newUrl = new Url(id, original, exp_date, user_id);
-    putUrl(newUrl);
-    return id;
-  }
-
-  updateUrl(original: string, user_id: number, id: string, exp_date?: string) {
-    const newUrl = new Url(id, original, exp_date, user_id);
-    putUrl(newUrl);
+    if (clicks === undefined) clicks = 0;
+    const newUrl: Url = new Url(id, original, exp_date, user_id, clicks);
+    await this.database.putUrl(newUrl);
     return newUrl;
   }
 
-  getUrls() {
-    return getUrls();
+  async updateUrl(original: string, id: string, exp_date: string) {
+    const urlMap = await this.checkValidUrl(id);
+    const url = new Url(id, original, exp_date, urlMap.get("user_id"), urlMap.get("clicks"));
+    await this.database.putUrl(url);
+    return url;
   }
 
-  getUrlById(id: string) {
-    return getUrlById(id);
+  async getUrlById(id: string) {
+    const urlMap = await this.checkValidUrl(id);
+    await this.database.putUrl(new Url(urlMap.get("id"), urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks")+1));
+    return urlMap.get("original");
   }
 
-  deleteUrl(id: string) {
-    return deleteUrl(1, id); //TODO sacar el hardcodeado
+  private async checkValidUrl(id: string) {
+    if (id.length !== ID_LENGTH) throw new BadRequestException();
+    const data = await this.database.getUrlById(id);
+    if (data.Count === 0) throw new NotFoundException();
+    const urlMap = new Map<string, any>;
+    Object.entries(data.Items[0]).forEach(([key, value]) => {urlMap.set(key, value)});
+    return urlMap;
+  }
+
+  async getUrls() {
+    return await this.database.getUrls();
+  }
+
+  async deleteUrl(id: string) {
+    return await this.database.deleteUrl("test", id); //TODO sacar el hardcodeado
   }
 }

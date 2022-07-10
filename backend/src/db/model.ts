@@ -1,5 +1,5 @@
 import { CreateTableCommand, CreateTableCommandInput } from "@aws-sdk/client-dynamodb";
-import client from '../client';
+import client from './client';
 
 const urlTableParams : CreateTableCommandInput = {
   TableName: 'Urls',
@@ -8,7 +8,7 @@ const urlTableParams : CreateTableCommandInput = {
     {AttributeName: 'id', KeyType: 'RANGE'},
   ],
   AttributeDefinitions: [
-    {AttributeName: 'user_id', AttributeType: 'N'},
+    {AttributeName: 'user_id', AttributeType: 'S'},
     {AttributeName: 'id', AttributeType: 'S'},
   ],
   GlobalSecondaryIndexes: [
