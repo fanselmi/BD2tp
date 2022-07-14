@@ -7,7 +7,7 @@ import {
   Put,
   Delete,
   BadRequestException,
-  InternalServerErrorException, NotFoundException
+  InternalServerErrorException, NotFoundException, Query
 } from "@nestjs/common";
 import { UrlsService } from "./urls.service";
 
@@ -48,8 +48,8 @@ export class UrlsController {
   }
 
   @Get()
-  async getAllUrls() {
-    return await this.urlsService.getUrls();
+  async getUrlsByUser(@Query('user_id') user_id: string) {
+    return await this.urlsService.getUrls(user_id);
   }
 
   @Delete(':id')

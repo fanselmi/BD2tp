@@ -37,9 +37,14 @@ export class UrlsDatabase {
     return await client.send(command);
   }
 
-  async getUrls () {
+  async getUrls (user_id) {
     const getUrlsParams: ScanCommandInput = {
       TableName: 'Urls',
+      FilterExpression: 'user_id = :user_id AND id <> :info',
+      ExpressionAttributeValues: {
+        ':user_id': user_id,
+        ':info': 'INFO'
+      }
     }
     const command = new ScanCommand(getUrlsParams);
     return await client.send(command);

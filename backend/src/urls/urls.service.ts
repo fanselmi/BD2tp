@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Url } from "./urls.model";
 import { UrlsDatabase } from "./urls.database";
 
@@ -10,7 +10,7 @@ export class UrlsService {
     private readonly database: UrlsDatabase
   ) {}
 
-  async insertUrl(original: string, user_id: string, id?: string, exp_date?: string, clicks?: number) {
+  async insertUrl(original: string, user_id: string, id?: string, exp_date?: string) { //TODO ver de sacar el user_id de aca y usar el de token
     let data;
     if (id === undefined) {
       do {
@@ -26,23 +26,43 @@ export class UrlsService {
       today.setMonth(today.getMonth() + 1);
       exp_date = today.toDateString();
     }
-    if (clicks === undefined) clicks = 0;
-    const newUrl: Url = new Url(id, original, exp_date, user_id, clicks);
+    const newUrl: Url = new Url(id, original, exp_date, user_id, 0);
     await this.database.putUrl(newUrl);
     return newUrl;
   }
 
-  async updateUrl(original: string, id: string, exp_date: string) {
-    const urlMap = await this.checkValidUrl(id);
-    const url = new Url(id, original, exp_date, urlMap.get("user_id"), urlMap.get("clicks"));
-    await this.database.putUrl(url);
-    return url;
+  async updateUrl(original: string, id: string, exp_date: string) { //TODO ver de conseguir el user_id del token para no hacer lo del map
+    try {
+      const urlMap = await this.checkValidUrl(id);
+      const url = new Url(id, original, exp_date, urlMap.get("user_id"), urlMap.get("clicks"));
+      await this.database.putUrl(url);
+      return url;
+    } catch (e) {
+      if (e instanceof BadRequestException) throw new BadRequestException()
+      else if (e instanceof NotFoundException) throw new NotFoundException()
+      throw new InternalServerErrorException();
+    }
   }
 
   async getUrlById(id: string) {
-    const urlMap = await this.checkValidUrl(id);
-    await this.database.putUrl(new Url(urlMap.get("id"), urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks")+1));
-    return urlMap.get("original");
+    try {
+      const urlMap = await this.checkValidUrl(id);
+      await this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks") + 1));
+      return urlMap.get("original");
+    } catch (e) {
+      if (e instanceof BadRequestException) throw new BadRequestException()
+      else if (e instanceof NotFoundException) throw new NotFoundException()
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUrls(user_id) {
+    const data = await this.database.getUrls(user_id);
+    return data.Items;
+  }
+
+  async deleteUrl(id: string) {
+    return await this.database.deleteUrl("test", id); //TODO sacar el hardcodeado
   }
 
   private async checkValidUrl(id: string) {
@@ -52,13 +72,5 @@ export class UrlsService {
     const urlMap = new Map<string, any>;
     Object.entries(data.Items[0]).forEach(([key, value]) => {urlMap.set(key, value)});
     return urlMap;
-  }
-
-  async getUrls() {
-    return await this.database.getUrls();
-  }
-
-  async deleteUrl(id: string) {
-    return await this.database.deleteUrl("test", id); //TODO sacar el hardcodeado
   }
 }
