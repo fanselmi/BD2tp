@@ -1,15 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UrlsService} from "../../../../services/urls.service";
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatTooltip} from "@angular/material/tooltip";
 import {finalize} from "rxjs";
 import {UrlModel} from "../../../../models/url.model";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {CustomValidators} from "ng2-validation";
 
 @Component({
   selector: 'app-create-url',
   templateUrl: './create-url.component.html',
-  styleUrls: ['./create-url.component.scss']
+  styleUrls: ['./create-url.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CreateUrlComponent implements OnInit {
 
@@ -24,7 +27,8 @@ export class CreateUrlComponent implements OnInit {
   @ViewChild('tooltip')  tooltip!: MatTooltip;
 
   constructor(private urlService: UrlsService,
-              private clipboard: Clipboard) {
+              private clipboard: Clipboard,
+              private _snackBar: MatSnackBar) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 3, 11, 31);
@@ -32,7 +36,7 @@ export class CreateUrlComponent implements OnInit {
 
   ngOnInit(): void {
     this.urlForm = new FormGroup({
-      longUrl: new FormControl('', [Validators.required, Validators.maxLength(150)])
+      longUrl: new FormControl('', [Validators.required, Validators.maxLength(150), CustomValidators.url])
     })
 
   }
@@ -42,7 +46,7 @@ export class CreateUrlComponent implements OnInit {
       return;
     }
     let url =this.urlForm.controls['longUrl'].value;
-    let data: UrlModel = new UrlModel(url, '95337287-e6b9-48fc-ad13-214e8eb08b83');
+    let data: UrlModel = new UrlModel(url, '3d2bbb76-edca-436e-a2b8-a43525655c87');
     if(this.customizing){
       let exp_date = this.urlForm.controls['expirationDate'].value;
       let id = this.urlForm.controls['text'].value;
@@ -60,7 +64,10 @@ export class CreateUrlComponent implements OnInit {
       next: res => {
         this.generatedUrl = res.id;
       }, error: err => {
-        console.log(err); //TODO show error mesage
+          this._snackBar.open('Could not shorten url', 'Close', {
+            verticalPosition: 'top',
+            panelClass: 'error-snackbar'
+          })
       }
     })
 
@@ -70,14 +77,6 @@ export class CreateUrlComponent implements OnInit {
   public copyUrl(): void {
     this.clipboard.copy(this.pageUrl + this.generatedUrl);
     this.tooltip.show();
-    this.urlService.getOriginalUrl(this.generatedUrl).subscribe({
-      next: data => {
-        console.log(data);
-       // console.log(data.Items[0]);
-      }, error: err => {
-        console.log(err);
-      }
-    })
   }
 
   public customizeForm(): void {

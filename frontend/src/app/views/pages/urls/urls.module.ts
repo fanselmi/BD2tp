@@ -12,6 +12,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {NgxLoadingButtonsModule} from "ngx-loading-buttons";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
         MatTooltipModule,
         MatProgressSpinnerModule,
         NgxLoadingButtonsModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+      MatSnackBarModule,
+
 
     ],
   providers: [],

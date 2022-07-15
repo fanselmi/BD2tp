@@ -19,7 +19,10 @@ export class UrlsService {
     return this.http.post(this.baseUrl, data, {headers: h});
   }
 
-  public getOriginalUrl(id: string): Observable<UrlModel>{
-    return this.http.get<UrlModel>(this.baseUrl + '/' + id);
+  public getOriginalUrl(id: string): Observable<any>{
+    const opts : any = {
+      responseType: 'text'
+    };
+    return this.http.get<any>(this.baseUrl + '/' + id, opts);
   }
 }

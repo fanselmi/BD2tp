@@ -5,12 +5,18 @@
         <div class="main-form">
           <mat-form-field class="long" hideRequiredMarker>
             <mat-label>Url</mat-label>
-            <input formControlName="longUrl" matInput placeholder="Insert your url" />
+            <input type="text" formControlName="longUrl" matInput placeholder="Insert your url"  />
             <mat-error *ngIf="this.urlForm.controls['longUrl'].hasError('required')">
               Must insert an url to shorten it
             </mat-error>
+            <mat-error *ngIf="this.urlForm.controls['longUrl'].hasError('maxlength')">
+              Url can not exceed 150 characters
+            </mat-error>
+            <mat-error *ngIf="this.urlForm.controls['longUrl'].hasError('url')">
+              Url must have url format: ej http://www.google.com
+            </mat-error>
           </mat-form-field>
-          <button type="submit" [disabled]="!this.urlForm.valid"   mat-raised-button [mtBasicSpinner]="this.loading" [hideText]="true">Submit</button>
+          <button  type="submit" [disabled]="!this.urlForm.valid"   mat-raised-button [mtBasicSpinner]="this.loading" [hideText]="true">Submit</button>
         </div>
         <div *ngIf="customizing" class="secondary-form">
           <mat-form-field hideRequiredMarker>
@@ -22,7 +28,7 @@
           </mat-form-field>
           <mat-form-field  hideRequiredMarker>
             <mat-label>Expiration Date</mat-label>
-            <input  [min]="minDate" [max]="maxDate" formControlName="expirationDate" matInput placeholder="Insert your expiration date" [matDatepicker]="picker">
+            <input  [min]="minDate" [max]="maxDate" formControlName="expirationDate" matInput placeholder="Insert your expiration date" [matDatepicker]="picker" >
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>

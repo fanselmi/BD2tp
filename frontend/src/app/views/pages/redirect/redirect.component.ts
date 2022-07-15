@@ -9,7 +9,7 @@ import {UrlModel} from "../../../models/url.model";
 })
 export class RedirectComponent implements OnInit {
 
-  private urlModel!: UrlModel;
+  private original!: string;
   public loading = true;
 
   constructor(private activatedRoute: ActivatedRoute) {
@@ -18,8 +18,8 @@ export class RedirectComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe((response: any) => {
-      this.urlModel = response.urlModel;
-      window.location.href =this.urlModel.original;
+      this.original = response.original;
+      window.location.href =this.original;
     });
   }
 

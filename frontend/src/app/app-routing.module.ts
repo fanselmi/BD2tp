@@ -12,7 +12,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: '404', component: Error404Component},
-  {path: ':id', component: RedirectComponent, resolve:{ urlModel: UrlResolverService}},
+  {path: ':id', component: RedirectComponent, resolve:{ original: UrlResolverService}},
   { path: '**', redirectTo: '/', pathMatch: 'full' },
 
 ];

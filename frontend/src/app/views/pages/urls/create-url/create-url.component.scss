@@ -36,6 +36,7 @@
   }
   .edit-button{
     display:flex;
+    margin-top: 0.75em;
     .mat-icon {
       margin-right: 0.2em;
     }
@@ -49,4 +50,11 @@
     }
   }
 
+}
+.error-snackbar{
+  color: #868585 !important;
+  background-color: #252524 !important;
+  .mat-simple-snackbar-action {
+    color: #e8bd57 !important;
+  }
 }
