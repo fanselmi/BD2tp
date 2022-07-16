@@ -19,6 +19,7 @@ export class UsersService {
     let userId = randomUUID();
     const newUser: User = new User(userId, email, hash, username);
     await this.database.putUser(newUser);
+    newUser.password = undefined;
     return newUser;
   }
 

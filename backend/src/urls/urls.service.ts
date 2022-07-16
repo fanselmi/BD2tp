@@ -65,7 +65,7 @@ export class UrlsService {
   async getUrlMap(id){
     const urlMap = await this.checkValidUrl(id);
     this.cacheManager.set(id, urlMap.get("original"));
-    this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks") + 1));
+    this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("expDate"), urlMap.get("userId"), urlMap.get("clicks") + 1));
     return urlMap;
   }
 
