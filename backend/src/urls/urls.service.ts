@@ -3,7 +3,6 @@ import {
   CACHE_MANAGER,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException
 } from "@nestjs/common";
 import { Url } from "./urls.model";
@@ -52,15 +51,15 @@ export class UrlsService {
   }
 
   async getUrlById(id: string) {
-      const cachedItem = await this.cacheManager.get(id);
-      if(cachedItem){
-        console.log("cache :)");
-        this.getUrlMap(id);
-        return cachedItem;
-      }
-      console.log("no cache");
-      const urlMap = await this.getUrlMap(id);
-      return urlMap.get("original");
+    const cachedItem = await this.cacheManager.get(id);
+    if (cachedItem){
+      console.log("cache :)");
+      this.getUrlMap(id);
+      return cachedItem;
+    }
+    console.log("no cache");
+    const urlMap = await this.getUrlMap(id);
+    return urlMap.get("original");
   }
 
   async getUrlMap(id){
@@ -72,11 +71,11 @@ export class UrlsService {
 
   async getUrlsByUser(userId) {
     const data = await this.database.getUrlsByUser(userId);
+    return data.Items;
+  }
 
   async getUrlByUser(userId, id) {
     return await this.database.getUrlByUser(userId, id);
-  }
-    return data.Items;
   }
 
   async deleteUrl(userId: string, id: string) {
