@@ -3,10 +3,11 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UrlsService} from "../../../../services/urls.service";
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatTooltip} from "@angular/material/tooltip";
-import {finalize} from "rxjs";
+import { BehaviorSubject, finalize } from "rxjs";
 import {UrlModel} from "../../../../models/url.model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {CustomValidators} from "ng2-validation";
+import { UserService } from "../../../../services/user.service";
 
 @Component({
   selector: 'app-create-url',
@@ -20,7 +21,7 @@ export class CreateUrlComponent implements OnInit {
   public generatedUrl: string = '';
   public  pageUrl: string = "http://localhost:4200/";
   public loading: boolean = false;
-  public customizing: boolean = false;
+  public customizing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public minDate!: Date;
   public maxDate!: Date;
 
@@ -28,7 +29,9 @@ export class CreateUrlComponent implements OnInit {
 
   constructor(private urlService: UrlsService,
               private clipboard: Clipboard,
-              private _snackBar: MatSnackBar) {
+              private _snackBar: MatSnackBar,
+              public userService: UserService
+              ) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 3, 11, 31);
@@ -47,7 +50,7 @@ export class CreateUrlComponent implements OnInit {
     }
     let url =this.urlForm.controls['longUrl'].value;
     let data: UrlModel = new UrlModel(url, '3d2bbb76-edca-436e-a2b8-a43525655c87');
-    if(this.customizing){
+    if(this.customizing.value){
       let expDate = this.urlForm.controls['expirationDate'].value;
       let id = this.urlForm.controls['text'].value;
       if(expDate != '') data.expDate = expDate;
@@ -82,7 +85,7 @@ export class CreateUrlComponent implements OnInit {
   public customizeForm(): void {
     this.urlForm.addControl('text', new FormControl('', [Validators.maxLength(5), Validators.minLength(5)]) )
     this.urlForm.addControl('expirationDate', new FormControl('') )
-    this.customizing = true;
+    this.customizing.next(true);
   }
 
 }

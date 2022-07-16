@@ -8,7 +8,7 @@ import { AuthModule } from "../auth/auth.module";
 @Module({
   imports: [forwardRef(() => AuthModule),
   CacheModule.register({
-    ttl: 60*60*24*7, //TODO: cambiar
+    ttl: 60*60*24*7,
     isGlobal: true,
     store: redisStore,
     socket:{

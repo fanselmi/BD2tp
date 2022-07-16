@@ -14,5 +14,9 @@ export class TopmenuComponent implements OnInit {
   }
 
 
+  userLogout(){
+    this.userService.logout()
+  }
+
 
 }

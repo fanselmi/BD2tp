@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import { UserService } from "../../../services/user.service";
 import { UserModel } from "../../../models/user.model";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { catchError, EMPTY, first } from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   public loginForm!: FormGroup;
   public loading: boolean = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -36,9 +37,21 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password')
   }
 
-  public onSubmit(): void {
+  async onSubmit(): Promise<void> {
     this.loading = true;
     this.userService.login(new UserModel(this.username?.value, this.email?.value, this.password?.value))
+      .pipe(
+        first(),
+        catchError(err => {
+          this.loading = false;
+          //this.router.navigate(["/login"]);
+          return EMPTY
+        }))
+      .subscribe( tokenString => {
+        localStorage.setItem('Bearer Token', tokenString.access_token);
+        this.userService.isLoggedIn.next(true);
+        this.router.navigate(["/"]);
+      })
   }
 
 }

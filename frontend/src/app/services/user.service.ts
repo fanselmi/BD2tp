@@ -3,7 +3,7 @@ import {environment} from "../../environments/environment";
 import { BehaviorSubject, catchError, EMPTY, first, Observable } from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {UserModel} from "../models/user.model";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,27 +14,26 @@ export class UserService {
 
   public isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {
+    const token = localStorage.getItem('Bearer Token');
+    token != undefined? this.isLoggedIn.next(true) : this.isLoggedIn.next(false);
+  }
 
   public register(data: UserModel): Observable<UserModel>{
     let h= new HttpHeaders({ 'Content-Type': 'application/json' })
     return this.http.post<UserModel>(this.baseUrl, data, {headers: h});
   }
 
-  public login(data: UserModel){
+  public login(data: UserModel): Observable<any>{
     let h= new HttpHeaders({ 'Content-Type': 'application/json' })
-    const token = this.http.post<string>(this.baseUrl + '/login', data, {headers: h});
-    token.pipe(
-      catchError(error => {
-        return error;
-      }),
-      first()
-      ).subscribe( tokenString => {
-        console.log(tokenString)
-      sessionStorage.setItem('Bearer Token', tokenString as string);
-      this.isLoggedIn.next(true);
-      this.router.navigate(["/"]);
-    })
+    return this.http.post<any>(this.baseUrl + '/login', data, {headers: h});
+  }
+
+  logout(){
+    this.router.navigate(["/login"]);
+    localStorage.removeItem('Bearer Token');
+    this.isLoggedIn.next(false);
+    return;
   }
 
 }

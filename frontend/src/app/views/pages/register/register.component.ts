@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../../services/user.service";
 import {UserModel} from "../../../models/user.model";
 import {finalize} from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,7 @@ export class RegisterComponent implements OnInit {
   public registerForm!: FormGroup;
   public loading: boolean = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = new FormGroup({
@@ -35,6 +36,7 @@ export class RegisterComponent implements OnInit {
       .subscribe({
         next: (user: UserModel) => {
           console.log(user);
+          this.router.navigate(['/login']);
         },
         error: (err: Error) => {
           console.log(err);
