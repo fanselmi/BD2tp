@@ -48,9 +48,9 @@ export class CreateUrlComponent implements OnInit {
     let url =this.urlForm.controls['longUrl'].value;
     let data: UrlModel = new UrlModel(url, '3d2bbb76-edca-436e-a2b8-a43525655c87');
     if(this.customizing){
-      let exp_date = this.urlForm.controls['expirationDate'].value;
+      let expDate = this.urlForm.controls['expirationDate'].value;
       let id = this.urlForm.controls['text'].value;
-      if(exp_date != '') data.exp_date = exp_date;
+      if(expDate != '') data.expDate = expDate;
       if(id != '') data.id = id;
     }
 

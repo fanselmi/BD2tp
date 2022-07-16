@@ -3,7 +3,6 @@ import {
   CACHE_MANAGER,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException
 } from "@nestjs/common";
 import { Url } from "./urls.model";
@@ -19,8 +18,9 @@ export class UrlsService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
-  async insertUrl(original: string, user_id: string, id?: string, exp_date?: string) { //TODO ver de sacar el user_id de aca y usar el de token
+  async insertUrl(original: string, userId?: string, id?: string, expDate?: string) {
     let data;
+    if (userId === undefined) userId = 'Anonymous';
     if (id === undefined) {
       do {
         id = require("randomstring").generate(ID_LENGTH);
@@ -30,65 +30,56 @@ export class UrlsService {
       data = await this.database.getUrlById(id);
       if (data.Count !== 0) throw new BadRequestException();
     }
-    if (exp_date === undefined) {
+    if (expDate === undefined) {
       const today = new Date();
       today.setMonth(today.getMonth() + 1);
-      exp_date = today.toDateString();
+      expDate = today.toDateString();
     } else {
       const today = new Date();
       today.setFullYear(today.getFullYear() - 4);
-      if (new Date(exp_date) < today) throw new BadRequestException();
+      if (new Date(expDate) < today) throw new BadRequestException();
     }
-    const newUrl: Url = new Url(id, original, Math.floor(new Date(exp_date).getTime()/1000), user_id, 0);
+    const newUrl: Url = new Url(id, original, Math.floor(new Date(expDate).getTime()/1000), userId, 0);
     await this.database.putUrl(newUrl);
     return newUrl;
   }
 
-  async updateUrl(original: string, id: string, exp_date: string) { //TODO ver de conseguir el user_id del token para no hacer lo del map
-    try {
-      const urlMap = await this.checkValidUrl(id);
-      const url = new Url(id, original, Math.floor(new Date(exp_date).getTime()/1000), urlMap.get("user_id"), urlMap.get("clicks"));
-      await this.database.putUrl(url);
-      return url;
-    } catch (e) {
-      if (e instanceof BadRequestException) throw new BadRequestException()
-      else if (e instanceof NotFoundException) throw new NotFoundException()
-      throw new InternalServerErrorException();
-    }
+  async updateUrl(id: string, userId: string, original: string, expDate: string, clicks: number) {
+    const url = new Url(id, original, Math.floor(new Date(expDate).getTime()/1000), userId, clicks);
+    await this.database.putUrl(url);
+    return url;
   }
 
   async getUrlById(id: string) {
-    try {
-      const cachedItem = await this.cacheManager.get(id);
-      if(cachedItem){
-        console.log("cache :)");
-        this.getUrlMap(id);
-        return cachedItem;
-      }
-      console.log("no cache");
-      const urlMap = await this.getUrlMap(id);
-      return urlMap.get("original");
-    } catch (e) {
-      if (e instanceof BadRequestException) throw new BadRequestException()
-      else if (e instanceof NotFoundException) throw new NotFoundException()
-      throw new InternalServerErrorException();
+    const cachedItem = await this.cacheManager.get(id);
+    if (cachedItem){
+      console.log("cache :)");
+      this.getUrlMap(id);
+      return cachedItem;
     }
+    console.log("no cache");
+    const urlMap = await this.getUrlMap(id);
+    return urlMap.get("original");
   }
 
   async getUrlMap(id){
     const urlMap = await this.checkValidUrl(id);
     this.cacheManager.set(id, urlMap.get("original"));
-    this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks") + 1));
+    this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("expDate"), urlMap.get("userId"), urlMap.get("clicks") + 1));
     return urlMap;
   }
 
-  async getUrls(user_id) {
-    const data = await this.database.getUrls(user_id);
+  async getUrlsByUser(userId) {
+    const data = await this.database.getUrlsByUser(userId);
     return data.Items;
   }
 
-  async deleteUrl(id: string) {
-    return await this.database.deleteUrl("test", id); //TODO sacar el hardcodeado
+  async getUrlByUser(userId, id) {
+    return await this.database.getUrlByUser(userId, id);
+  }
+
+  async deleteUrl(userId: string, id: string) {
+    return await this.database.deleteUrl(userId, id);
   }
 
   private async checkValidUrl(id: string) {

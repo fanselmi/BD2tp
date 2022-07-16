@@ -1,15 +1,15 @@
 export class UrlModel {
   public original: string;
   public id?: string;
-  public exp_date?: string;
-  public user_id: string;
+  public expDate?: string;
+  public userId: string;
   public clicks?: number;
 
 
-  constructor(original: string, user_id: string, id?: string, exp_date?: string) {
+  constructor(original: string, userId: string, id?: string, expDate?: string) {
     this.original = original;
     this.id = id;
-    this.exp_date = exp_date;
-    this.user_id = user_id;
+    this.expDate = expDate;
+    this.userId = userId;
   }
 }

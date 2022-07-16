@@ -5,7 +5,7 @@ const urlTTLTableParams : UpdateTimeToLiveCommandInput = {
   TableName: 'Urls',
   TimeToLiveSpecification: {
     Enabled: true,
-    AttributeName: 'exp_date'
+    AttributeName: 'expDate'
   }
 }
 

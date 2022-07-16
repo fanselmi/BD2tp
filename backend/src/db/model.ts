@@ -4,11 +4,11 @@ import client from './client';
 const urlTableParams : CreateTableCommandInput = {
   TableName: 'Urls',
   KeySchema: [
-    {AttributeName: 'user_id', KeyType: 'HASH'},
+    {AttributeName: 'userId', KeyType: 'HASH'},
     {AttributeName: 'id', KeyType: 'RANGE'},
   ],
   AttributeDefinitions: [
-    {AttributeName: 'user_id', AttributeType: 'S'},
+    {AttributeName: 'userId', AttributeType: 'S'},
     {AttributeName: 'id', AttributeType: 'S'},
   ],
   GlobalSecondaryIndexes: [

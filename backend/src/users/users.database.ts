@@ -14,7 +14,7 @@ export class UsersDatabase {
     const putUserParams: PutCommandInput = {
       TableName: 'Urls',
       Item: {
-        user_id: user.user_id,
+        userId: user.userId,
         id: 'INFO',
         email: user.email,
         password: user.password,
@@ -25,16 +25,15 @@ export class UsersDatabase {
     return await client.send(command);
   };
 
-  async getUserById (user_id: string) {
-    const getUserParams: GetCommandInput = {
+  async getUserByEmail(email) {
+    const getUsersParams: ScanCommandInput = {
       TableName: 'Urls',
-      Key: {
-        user_id: user_id,
-        id: 'INFO',
-      },
-      ProjectionExpression: 'user_id, email, username'
-    };
-    const command = new GetCommand(getUserParams);
+      FilterExpression: 'email = :email',
+      ExpressionAttributeValues: {
+        ':email': email,
+      }
+    }
+    const command = new ScanCommand(getUsersParams);
     return await client.send(command);
   }
 }
