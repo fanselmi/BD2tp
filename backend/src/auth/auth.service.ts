@@ -5,6 +5,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UrlsService } from "../urls/urls.service";
 
 const ID_LENGTH: number = 5;
+const bcrypt = require('bcrypt');
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
       const userMap = new Map<string, any>;
       Object.entries(data.Items[0]).forEach(([key, value]) => {userMap.set(key, value)});
       const user = new User(userMap.get('userId'), userMap.get('email'), userMap.get('password'), userMap.get('username'));
-      if (user.password == pass) {
+      if (bcrypt.compareSync(pass, user.password)) {
         const { password, ...result } = user;
         return result;
       }
