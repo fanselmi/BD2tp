@@ -25,8 +25,12 @@ export class UrlsService {
       const today = new Date();
       today.setMonth(today.getMonth() + 1);
       exp_date = today.toDateString();
+    } else {
+      const today = new Date();
+      today.setFullYear(today.getFullYear() - 4);
+      if (new Date(exp_date) < today) throw new BadRequestException();
     }
-    const newUrl: Url = new Url(id, original, exp_date, user_id, 0);
+    const newUrl: Url = new Url(id, original, Math.floor(new Date(exp_date).getTime()/1000), user_id, 0);
     await this.database.putUrl(newUrl);
     return newUrl;
   }
@@ -34,7 +38,7 @@ export class UrlsService {
   async updateUrl(original: string, id: string, exp_date: string) { //TODO ver de conseguir el user_id del token para no hacer lo del map
     try {
       const urlMap = await this.checkValidUrl(id);
-      const url = new Url(id, original, exp_date, urlMap.get("user_id"), urlMap.get("clicks"));
+      const url = new Url(id, original, Math.floor(new Date(exp_date).getTime()/1000), urlMap.get("user_id"), urlMap.get("clicks"));
       await this.database.putUrl(url);
       return url;
     } catch (e) {
