@@ -1,13 +1,22 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from "@nestjs/common";
 import { Url } from "./urls.model";
 import { UrlsDatabase } from "./urls.database";
+import { Cache } from 'cache-manager';
 
 const ID_LENGTH: number = 5;
 
 @Injectable()
 export class UrlsService {
   constructor(
-    private readonly database: UrlsDatabase
+    private readonly database: UrlsDatabase,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
   async insertUrl(original: string, user_id: string, id?: string, exp_date?: string) { //TODO ver de sacar el user_id de aca y usar el de token
@@ -50,14 +59,27 @@ export class UrlsService {
 
   async getUrlById(id: string) {
     try {
-      const urlMap = await this.checkValidUrl(id);
-      await this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks") + 1));
+      const cachedItem = await this.cacheManager.get(id);
+      if(cachedItem){
+        console.log("cache :)");
+        this.getUrlMap(id);
+        return cachedItem;
+      }
+      console.log("no cache");
+      const urlMap = await this.getUrlMap(id);
       return urlMap.get("original");
     } catch (e) {
       if (e instanceof BadRequestException) throw new BadRequestException()
       else if (e instanceof NotFoundException) throw new NotFoundException()
       throw new InternalServerErrorException();
     }
+  }
+
+  async getUrlMap(id){
+    const urlMap = await this.checkValidUrl(id);
+    this.cacheManager.set(id, urlMap.get("original"));
+    this.database.putUrl(new Url(id, urlMap.get("original"), urlMap.get("exp_date"), urlMap.get("user_id"), urlMap.get("clicks") + 1));
+    return urlMap;
   }
 
   async getUrls(user_id) {
@@ -73,7 +95,7 @@ export class UrlsService {
     if (id.length !== ID_LENGTH) throw new BadRequestException();
     const data = await this.database.getUrlById(id);
     if (data.Count === 0) throw new NotFoundException();
-    const urlMap = new Map<string, any>;
+    const urlMap = new Map<string, any>();
     Object.entries(data.Items[0]).forEach(([key, value]) => {urlMap.set(key, value)});
     return urlMap;
   }
