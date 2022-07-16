@@ -13,10 +13,10 @@
         <a routerLink="/" class="nav-link m-2 menu-item nav-active">Home</a>
       </li>
       <li class="nav-item">
-        <a routerLink="/login" class="nav-link m-2 menu-item">Login</a>
+        <a routerLink="/login" class="nav-link m-2 menu-item" *ngIf="!(userService.isLoggedIn | async)">Login</a>
       </li>
       <li class="nav-item">
-        <a routerLink="/login" class="nav-link m-2 menu-item">Profile</a>
+        <a routerLink="/login" class="nav-link m-2 menu-item" *ngIf="userService.isLoggedIn | async">Profile</a>
       </li>
     </ul>
   </div>
