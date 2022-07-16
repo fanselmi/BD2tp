@@ -7,53 +7,44 @@ import {
   Put,
   Delete,
   BadRequestException,
-  InternalServerErrorException, NotFoundException, Query, UseInterceptors, CacheInterceptor
+  InternalServerErrorException, NotFoundException, Query, UseInterceptors, CacheInterceptor, UseGuards, Request
 } from "@nestjs/common";
 import { UrlsService } from "./urls.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { AuthService } from "../auth/auth.service";
 
 @Controller('urls')
 export class UrlsController {
-  constructor(private readonly urlsService: UrlsService) {}
+  constructor(private readonly urlsService: UrlsService,
+              private authService: AuthService) {}
 
   @Post()
-  async insertUrl(@Body('original') original: string, @Body('user_id') user_id: string, @Body('id') id?: string, @Body('exp_date') exp_date?: string) {
-    try {
-      return await this.urlsService.insertUrl(original, user_id, id, exp_date);
-    } catch (e) {
-      if (e instanceof BadRequestException) throw new BadRequestException();
-      throw new InternalServerErrorException();
-    }
+  async insertUrl(@Body('original') original: string, @Body('userId') userId?: string, @Body('id') id?: string, @Body('expDate') expDate?: string) {
+    return await this.urlsService.insertUrl(original, userId, id, expDate);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateUrl(@Param('id') id: string, @Body('original') original: string, @Body('exp_date') exp_date: string) {
-    try {
-      return await this.urlsService.updateUrl(original, id, exp_date);
-    } catch (e) {
-      if (e instanceof BadRequestException) throw new BadRequestException()
-      else if (e instanceof NotFoundException) throw new NotFoundException()
-      throw new InternalServerErrorException();
-    }
+  async updateUrl(@Param('id') id: string, @Request() req, @Body('original') original: string, @Body('expDate') expDate: string) {
+    const clicks = await this.authService.urlBelongs(req.user.userId, id);
+    return await this.urlsService.updateUrl(id, req.user.userId, original, expDate, clicks);
   }
 
   @Get(':id')
   async geUrlById(@Param('id') id: string) {
-    try {
-      return await this.urlsService.getUrlById(id);
-    } catch (e) {
-      if (e instanceof BadRequestException) throw new BadRequestException()
-      else if (e instanceof NotFoundException) throw new NotFoundException()
-      throw new InternalServerErrorException();
-    }
+    return await this.urlsService.getUrlById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async getUrlsByUser(@Query('user_id') user_id: string) {
-    return await this.urlsService.getUrls(user_id);
+  async getUrlsByUser(@Request() req) {
+    return await this.urlsService.getUrlsByUser(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deleteUrl(@Param('id') id: string) {
-    return await this.urlsService.deleteUrl(id);
+  async deleteUrl(@Param('id') id: string, @Request() req) {
+    await this.authService.urlBelongs(req.user.userId, id);
+    return await this.urlsService.deleteUrl(req.user.userId, id);
   }
 }

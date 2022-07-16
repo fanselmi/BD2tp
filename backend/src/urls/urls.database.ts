@@ -1,6 +1,6 @@
 import {
   DeleteCommand,
-  DeleteCommandInput, PutCommand, PutCommandInput,
+  DeleteCommandInput, GetCommand, GetCommandInput, PutCommand, PutCommandInput,
   QueryCommand,
   QueryCommandInput, ScanCommand,
   ScanCommandInput
@@ -13,10 +13,10 @@ export class UrlsDatabase {
     const putUrlParams: PutCommandInput = {
       TableName: 'Urls',
       Item: {
-        user_id: url.user_id,
+        userId: url.userId,
         id: url.id,
         original: url.original,
-        exp_date: url.exp_date,
+        expDate: url.expDate,
         clicks: url.clicks
       }
     };
@@ -37,12 +37,24 @@ export class UrlsDatabase {
     return await client.send(command);
   }
 
-  async getUrls (user_id) {
+  async getUrlByUser (userId: string, id: string) {
+    const getUserParams: GetCommandInput = {
+      TableName: 'Urls',
+      Key: {
+        userId: userId,
+        id: id,
+      },
+    };
+    const command = new GetCommand(getUserParams);
+    return await client.send(command);
+  }
+
+  async getUrlsByUser (userId) {
     const getUrlsParams: ScanCommandInput = {
       TableName: 'Urls',
-      FilterExpression: 'user_id = :user_id AND id <> :info',
+      FilterExpression: 'userId = :userId AND id <> :info',
       ExpressionAttributeValues: {
-        ':user_id': user_id,
+        ':userId': userId,
         ':info': 'INFO'
       }
     }
@@ -50,11 +62,11 @@ export class UrlsDatabase {
     return await client.send(command);
   }
 
-  async deleteUrl (user_id: string, id: string) {
+  async deleteUrl (userId: string, id: string) {
     const deleteUrlParams: DeleteCommandInput = {
       TableName: 'Urls',
       Key: {
-        user_id: user_id,
+        userId: userId,
         id: id
       }
     }
