@@ -1,0 +1,26 @@
+<div class="card">
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{urlInfo.id}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{urlInfo.original}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="panel-info">
+      <div class="url-info">
+        <div *ngIf="urlInfo.expDate !== undefined">Expiration Date: {{date.toDateString()}}</div>
+        <div *ngIf="urlInfo.clicks !== undefined">Clicks: {{urlInfo.clicks}}</div>
+      </div>
+      <div class="url-buttons">
+        <div class="url-button" (click)="editUrl()">
+          <mat-icon>edit</mat-icon>
+        </div>
+        <div class="url-button" (click)="deleteUrl()">
+          <mat-icon>delete</mat-icon>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</div>

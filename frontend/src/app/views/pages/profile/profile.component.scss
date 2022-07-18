@@ -1,0 +1,8 @@
+:host {
+  .url-list {
+    --width: 70%;
+    --translateVar: calc(15% * 100 / 70);
+    width: var(--width);
+    transform: translateX(var(--translateVar));
+  }
+}

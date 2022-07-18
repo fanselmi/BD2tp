@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Edit URL</h1>
+<div mat-dialog-content>
+  <form novalidate [formGroup]="this.form">
+    <div class="main-form">
+      <mat-form-field appearance="fill">
+        <mat-label>Original</mat-label>
+        <input matInput type="text" [value]="originalUrl?.value" formControlName="originalUrl" placeholder="Insert your url">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Expiration Date</mat-label>
+        <input matInput type="date" [value]="expirationDate?.value" formControlName="expirationDate">
+      </mat-form-field>
+    </div>
+  </form>
+
+</div>
+<div mat-dialog-actions class="buttons">
+  <button mat-button [mat-dialog-close]="false" class="decline">Cancel</button>
+  <button mat-button [mat-dialog-close]="onSubmit()"  class="accept">Save</button>
+</div>

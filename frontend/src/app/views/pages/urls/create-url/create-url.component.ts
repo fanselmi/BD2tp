@@ -49,7 +49,12 @@ export class CreateUrlComponent implements OnInit {
       return;
     }
     let url =this.urlForm.controls['longUrl'].value;
-    let data: UrlModel = new UrlModel(url, '3d2bbb76-edca-436e-a2b8-a43525655c87');
+    const user = this.userService.getUserInfo();
+    let data: UrlModel = new UrlModel(url);
+
+    if ( user != null)
+      data.userId = user.userId;
+
     if(this.customizing.value){
       let expDate = this.urlForm.controls['expirationDate'].value;
       let id = this.urlForm.controls['text'].value;

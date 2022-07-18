@@ -20,6 +20,13 @@ import {MatNativeDateModule} from "@angular/material/core";
 import { RedirectComponent } from './views/pages/redirect/redirect.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { Error404Component } from './views/pages/error404/error404.component';
+import { ProfileComponent } from './views/pages/profile/profile.component';
+import { UrlListComponent } from './views/pages/profile/url-list/url-list.component';
+import { UrlCardComponent } from './views/pages/profile/url-card/url-card.component';
+import { MatExpansionModule } from "@angular/material/expansion";
+import { ConfirmationModalComponent } from './views/pages/profile/confirmation-modal/confirmation-modal.component';
+import { EditModalComponent } from './views/pages/profile/edit-modal/edit-modal.component';
+import { MatDialogModule } from "@angular/material/dialog";
 
 
 @NgModule({
@@ -29,7 +36,12 @@ import { Error404Component } from './views/pages/error404/error404.component';
     RegisterComponent,
     LoginComponent,
     RedirectComponent,
-    Error404Component
+    Error404Component,
+    ProfileComponent,
+    UrlListComponent,
+    UrlCardComponent,
+    ConfirmationModalComponent,
+    EditModalComponent
 
   ],
   imports: [
@@ -49,7 +61,9 @@ import { Error404Component } from './views/pages/error404/error404.component';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    MatDialogModule
 
   ],
   providers: [],

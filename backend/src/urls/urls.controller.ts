@@ -19,8 +19,14 @@ export class UrlsController {
               private authService: AuthService) {}
 
   @Post()
-  async insertUrl(@Body('original') original: string, @Body('userId') userId?: string, @Body('id') id?: string, @Body('expDate') expDate?: string) {
-    return await this.urlsService.insertUrl(original, userId, id, expDate);
+  async insertUrl(@Body('original') original: string, @Body('id') id?: string, @Body('expDate') expDate?: string) {
+    return await this.urlsService.insertUrl(original, undefined, id, expDate);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':userId')
+  async insertUserUrl(@Body('original') original: string, @Request() req, @Body('id') id?: string, @Body('expDate') expDate?: string) {
+    return await this.urlsService.insertUrl(original, req.user.userId, id, expDate);
   }
 
   @UseGuards(JwtAuthGuard)

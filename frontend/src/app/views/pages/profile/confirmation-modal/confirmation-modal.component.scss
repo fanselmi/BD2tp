@@ -1,0 +1,16 @@
+:host {
+
+  .buttons {
+    display: flex;
+    justify-content: end;
+
+    .accept {
+      color: white;
+      background-color: #e8bd57;
+    }
+    .decline {
+      background-color: transparent;
+    }
+  }
+
+}

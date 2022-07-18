@@ -1,0 +1,22 @@
+:host {
+  .card {
+    margin: 5px;
+
+    .panel-info {
+      display: flex;
+      justify-content: space-between;
+
+      .url-info {
+
+      }
+      .url-buttons {
+        display: flex;
+        .url-button:hover {
+          cursor: pointer;
+          opacity: 70%;
+        }
+
+      }
+    }
+  }
+}

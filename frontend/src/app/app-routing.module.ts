@@ -6,11 +6,13 @@ import {RegisterComponent} from "./views/pages/register/register.component";
 import {RedirectComponent} from "./views/pages/redirect/redirect.component";
 import {UrlResolverService} from "./services/url-resolver.service";
 import {Error404Component} from "./views/pages/error404/error404.component";
+import { ProfileComponent } from "./views/pages/profile/profile.component";
 
 const routes: Routes = [
   {path: '', component: UrlsComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
+  {path: 'profile', component: ProfileComponent},
   {path: '404', component: Error404Component},
   {path: ':id', component: RedirectComponent, resolve:{ original: UrlResolverService}},
   { path: '**', redirectTo: '/', pathMatch: 'full' },

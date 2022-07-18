@@ -1,0 +1,39 @@
+:host {
+
+  .buttons {
+    display: flex;
+    justify-content: end;
+
+    .accept {
+      color: white;
+      background-color: #e8bd57;
+    }
+    .decline {
+      background-color: transparent;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    ::ng-deep.mat-form-field-flex {
+      background-color: white;
+    }
+    .main-form {
+      display: flex;
+      button {
+        width: 12%;
+        align-self: center;
+        background-color: #e8bd57;
+        color: white;
+      }
+      .mat-button-disabled {
+        background-color: #7a7979;
+        color: white;
+        opacity: 40%;
+      }
+    }
+
+  }
+
+}
