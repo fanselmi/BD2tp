@@ -4,16 +4,6 @@
     <div class="card-body">
       <form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field hideRequiredMarker appearance="outline">
-          <mat-label>Username</mat-label>
-          <input type="text" formControlName="username" matInput placeholder="Insert your username" />
-          <mat-error *ngIf="this.loginForm.controls['email'].hasError('required')">
-            Username is required
-          </mat-error>
-          <mat-error *ngIf="this.loginForm.controls['email'].hasError('maxlength')">
-            Username must have a maximum length of 150 characters
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field hideRequiredMarker appearance="outline">
           <mat-label>Email</mat-label>
           <input type="email" formControlName="email" matInput placeholder="Insert your email" />
           <mat-error *ngIf="this.loginForm.controls['email'].hasError('required')">
