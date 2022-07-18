@@ -16,8 +16,15 @@ export class UrlsService {
   constructor(private http: HttpClient, private userService: UserService) { }
 
   public createUrl(data: UrlModel): Observable<any>{
-    let h= new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.userService.getToken() })
-    return this.http.post(this.baseUrl + '/' + this.userService.getUserInfo()?.userId, data, {headers: h});
+    if ( this.userService.isLoggedIn.value ){
+      let h= new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.userService.getToken() })
+      return this.http.post(this.baseUrl + '/' + this.userService.getUserInfo()?.userId, data, {headers: h});
+    }
+    else {
+      let h= new HttpHeaders({ 'Content-Type': 'application/json'})
+      return this.http.post(this.baseUrl, data, {headers: h});
+    }
+
   }
 
   public editUrl(data: UrlModel): Observable<any>{
